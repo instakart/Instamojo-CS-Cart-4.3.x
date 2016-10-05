@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<addon scheme='2.0'>
+    <id>instamojo</id>
+    <version>1.0</version>
+    <name>Instamojo</name>
+    <description>Online Payment Gateway</description>
+    <priority>100500</priority>
+	
+		
+	<queries>
+         <item for="install">CREATE TABLE IF NOT EXISTS ?:ult_objects_sharing (
+  `share_company_id` int(11) unsigned NOT NULL,
+  `share_object_id` mediumint(8) NOT NULL DEFAULT '0',
+  `share_object_type` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`share_object_id`,`share_company_id`,`share_object_type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;</item>
+       
+		<item for="install">DELETE FROM ?:ult_objects_sharing where share_object_id=(SELECT payment_id from ?:payments where processor_id=(select processor_id from ?:payment_processors where processor='Instamojo'))</item>
+        <item for="install">DELETE FROM ?:payment_descriptions where payment_id=(SELECT payment_id from ?:payments where processor_id=(select processor_id from ?:payment_processors where processor='Instamojo'))</item>
+        <item for="install">DELETE FROM ?:payments where processor_id = (select processor_id from ?:payment_processors where processor='Instamojo');</item>
+        <item for="install">Delete from ?:payment_processors where processor='Instamojo'</item>
+		<item for="install">
+          INSERT INTO ?:payment_processors ( `processor`, `processor_script`, `processor_template`, `admin_template`, `callback`, `type`) VALUES 
+	("Instamojo","instamojo.php","views/orders/components/payments/business_check.tpl","instamojo.tpl","N","P");</item>
+<item for="install">SET @last_id_in_table1 = LAST_INSERT_ID();</item>
+<item for="install">INSERT INTO ?:payments ( `company_id`, `usergroup_ids`, `position`, `status`, `template`, `processor_id`) 
+VALUES ("1","0","5","A","views/orders/components/payments/business_check.tpl",@last_id_in_table1);</item>
+<item for="install">SET @last_id_in_table1 = LAST_INSERT_ID();</item>
+<item for="install">INSERT INTO ?:payment_descriptions (`payment_id`, `payment`, `description`, `instructions`, `surcharge_title`, `lang_code`) 
+VALUES (@last_id_in_table1,"Instamojo","Pay With Instamojo","","","en");</item>
+<item for="install">INSERT INTO ?:ult_objects_sharing (`share_company_id`, `share_object_id`, `share_object_type`) 
+VALUES ("1",@last_id_in_table1,"payments");</item>
+
+	    <item for="uninstall">DELETE FROM ?:ult_objects_sharing where share_object_id=(SELECT payment_id from ?:payments where processor_id=(select processor_id from ?:payment_processors where processor='Instamojo'))</item>      
+		<item for="uninstall">DELETE FROM ?:payment_descriptions where payment_id=(SELECT payment_id from ?:payments where processor_id=(select processor_id from ?:payment_processors where processor='Instamojo'))</item>
+        <item for="uninstall">DELETE FROM ?:payments where processor_id = (select processor_id from ?:payment_processors where processor='Instamojo');</item>
+        <item for="uninstall">Delete from ?:payment_processors where processor='Instamojo'</item>
+	</queries>
+</addon>
+
+
