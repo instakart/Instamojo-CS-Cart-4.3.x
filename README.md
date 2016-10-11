@@ -30,6 +30,8 @@ Download the zip file from [latest release](https://github.com/Instamojo/Instamo
 
     - **Test Mode:** If enabled you can use our [Sandbox environment](https://test.instamojo.com) to test payments. Note that in this case you should use `Client Secret` and `Client ID` from the test account not production.
 
+Phone number is a required field for this addon to work properly. Go to `Administration -> Profile fields` and mark the `Phone` field as both `show/compulsory` during checkout.
+
 
 ## Migrating from older version(version < 2.0.0)
 
