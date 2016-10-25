@@ -29,7 +29,7 @@ Class Instamojo
 		if($test_mode)
 			$this->auth_endpoint = "https://test.instamojo.com/oauth2/token/";
 		else
-			$this->auth_endpoint = "http://www.instamojo.com/oauth2/token/"; 
+			$this->auth_endpoint = "https://www.instamojo.com/oauth2/token/"; 
 		
 		$this->getAccessToken();
 	}
